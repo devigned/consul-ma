@@ -13,3 +13,5 @@
 
 *.pem
 .idea
+.env
+*.zip
