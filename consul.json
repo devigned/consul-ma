@@ -7,7 +7,7 @@
     "client_secret": "{{env `ARM_CLIENT_SECRET`}}",
     "azure_location": null,
     "resource_group_name": "consul-managed-app",
-    "consul_version": "1.4.0-rc1"
+    "consul_version": "1.4.0"
   },
   "builders": [
     {
@@ -31,13 +31,16 @@
       "type": "shell",
       "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
       "inline": [
-        "echo \"deb https://packages.microsoft.com/repos/azure-cli/ wheezy main\" | sudo tee /etc/apt/sources.list.d/azure-cli.list",
-        "apt-key adv --keyserver packages.microsoft.com --recv-keys 417A0893",
+        "apt-get install apt-transport-https lsb-release software-properties-common -y",
+        "AZ_REPO=$(lsb_release -cs)",
+        "echo \"deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main\" | sudo tee /etc/apt/sources.list.d/azure-cli.list",
+        "apt-key --keyring /etc/apt/trusted.gpg.d/Microsoft.gpg adv --keyserver packages.microsoft.com --recv-keys BC528686B50D79E339D3721CEB3E94ADBE1229CF",
         "apt-get update && apt-get install -y libssl-dev libffi-dev python-dev build-essential apt-transport-https azure-cli",
         "DEBIAN_FRONTEND=noninteractive apt-get -y upgrade",
 
-        "git clone --branch v0.0.5 https://github.com/hashicorp/terraform-azurerm-consul.git /tmp/terraform-azurerm-consul",
+        "git clone https://github.com/hashicorp/terraform-azurerm-consul.git /tmp/terraform-azurerm-consul",
         "/tmp/terraform-azurerm-consul/modules/install-consul/install-consul --version {{user `consul_version`}}",
+        "echo 'done installing consul'",
         "/tmp/terraform-azurerm-consul/modules/install-dnsmasq/install-dnsmasq"
       ],
       "inline_shebang": "/bin/sh -x",

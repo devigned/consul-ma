@@ -8,6 +8,15 @@ VERSION ?= $(shell git describe --tags --always --dirty --match=v* 2> /dev/null 
 V 		= 0
 Q 		= $(if $(filter 1,$V),,@)
 M 		= $(shell printf "\033[34;1m▶\033[0m")
+EVNSUBST= /usr/local/opt/gettext/bin/envsubst
+REPLACE	= '$${MA_STORAGE_ACCOUNT},$${MA_STORAGE_ACCOUNT_KEY}'
+
+.PHONY: consul-start-script
+consul-start-script: ; $(info $(M) rendering and pushing Consul VM startup script...)
+	$(eval TMPDIR := $(shell mktemp -d))
+	$(Q) $(EVNSUBST) < provision-script-template.sh > $(TMPDIR)/provision.sh
+	$(Q) az storage blob upload --account-name $(MA_STORAGE_ACCOUNT) -c $(MA_STORAGE_CONTAINER) -f $(TMPDIR)/provision.sh -n provision.sh > /dev/null 2>&1
+	$(Q) rm $(TMPDIR)/provision.sh
 
 .PHONY: image
 image: ; $(info $(M) building VM image using packer...)
@@ -16,7 +25,9 @@ image: ; $(info $(M) building VM image using packer...)
 .PHONY: pkg
 pkg: ; $(info $(M) zipping up managed app package…)
 	$(shell mkdir -p ./output)
+	$(Q) $(EVNSUBST) $(REPLACE) < mainTemplate-template.json > mainTemplate.json
 	$(Q) zip -q ./output/consul-app-$(VERSION).zip createUiDefinition.json mainTemplate.json
+	$(Q) rm mainTemplate.json
 
 .PHONY: publish
 publish: pkg ; $(info $(M) publishing…)
@@ -47,7 +58,7 @@ publish: pkg ; $(info $(M) publishing…)
 
 .PHONY: clean
 clean: ; $(info $(M) removing build artifacts…)
-	$(Q) rm -r ./output
+	$(Q) rm -rf ./output
 
 .PHONY: version
 version:
