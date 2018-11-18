@@ -17,3 +17,6 @@
 *.zip
 output
 mainTemplate.json
+.terraform
+*.tfstate*
+.log

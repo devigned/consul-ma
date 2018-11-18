@@ -30,7 +30,7 @@
     },
     "vmImageId": {
       "type": "string",
-      "defaultValue": "/subscriptions/7149d088-e1ca-46c8-afac-be4f53f53dca/resourceGroups/consul-managed-app/providers/Microsoft.Compute/images/consul-ubuntu-2018-11-16-012303",
+      "defaultValue": "${IMAGE_ID}",
       "metadata": {
         "description": "VM image resource ID"
       }
