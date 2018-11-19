@@ -9,11 +9,11 @@ V 		= 0
 Q 		= $(if $(filter 1,$V),,@)
 M 		= $(shell printf "\033[34;1m▶\033[0m")
 EVNSUBST= /usr/local/opt/gettext/bin/envsubst
-REPLACE	= '$${MA_STORAGE_ACCOUNT},$${MA_STORAGE_ACCOUNT_KEY},$${IMAGE_ID}'
+REPLACE	= '$${MA_STORAGE_ACCOUNT},$${MA_STORAGE_ACCOUNT_KEY},$${IMAGE_ID},$${SSH_PUB_KEY}'
 
 
 .PHONY: all
-all: consul-start-script publish $(info $(M) building and deploying all the things...)
+all: consul-start-script publish
 
 .PHONY: deploy-container
 deploy-container: ; $(info $(M) ensure deployment container is created...)
@@ -35,7 +35,8 @@ image: ; $(info $(M) building VM image using packer...)
 pkg: ; $(info $(M) zipping up managed app package…)
 	$(shell mkdir -p ./output)
 	$(eval IMAGE_ID := $(shell az image list -g $(MA_RESOURCE_GROUP) --query "[].id" -o tsv | sort -r | head -n 1))
-	$(Q) IMAGE_ID=$(IMAGE_ID) $(EVNSUBST) $(REPLACE) < mainTemplate-template.json > mainTemplate.json
+	$(eval SSH_PUB_KEY := "$(shell cat ~/.ssh/id_rsa.pub)")
+	$(Q) SSH_PUB_KEY=$(SSH_PUB_KEY) IMAGE_ID=$(IMAGE_ID) $(EVNSUBST) $(REPLACE) < mainTemplate-template.json > mainTemplate.json
 	$(Q) zip -q ./output/consul-app-$(VERSION).zip createUiDefinition.json mainTemplate.json
 	$(Q) rm mainTemplate.json
 

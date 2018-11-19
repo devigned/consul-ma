@@ -11,7 +11,7 @@
     },
     "sshKeyData": {
       "type": "string",
-      "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDXvORz9EeGD6MpWfuykj5KcN2qnE5nT4VzSzCgTfn6QpxGBhQJOfO1R+eZYYy7DIcqFWrjl6UI1VlosEkx+cJUQNK72+NMpXECvKw5jE1F1qpwUJZ8OSUNJWhOwNH/HSxeZ0jWJ3M1ay7jUfkS/cOHLDpryJ0Vmia3rXkic4TpYiTi2kt9VvchO8IlXLRqP8+SWnjZ+DJiqRbg9avnHg0wlEFlXBBNUXOcE1O0zGAfPr+vnQlqoU2LVAA9NgVDrY0iiayQfu6YzDMurHdCgCQRbMcUEESCvvaediZTVOZzKxKV+qFN+l7NYFXpd2brSfnNToB6iLU9TEJEXEE1QfXyWtJ2vbNgO6S+anz0ndPJMISAHWtiLK55i9F3sDIb7V7c9YMX+XQL4IwomJGHWzjzOODG9ootSzyptnWemVEawI0XFI+wsbH90RgE2SKefL0bU/dGjPnpFVG13gWfN/OJxH1MrPnu+0j7YCK1tLck9Wzosk3kNNd6re0qZjKnaBxU95S1ppY4rI7W2bTGcLdlt+9yR6/LS6nRWBljykj9pG31F8L/v67Y5L2863HRrNOfCojRj/xakzjjEw2R8T0RhFQMNH5MseB3Qi/TblM3yluxIhGip1dqVpbdKrRZr8vHhUIqQiu3dk9Ln5Di5QSXMFipZ2HmXN0oackRurArHQ== david@devigned.com",
+      "defaultValue": "${SSH_PUB_KEY}",
       "metadata": {
         "description": "SSH public key for access to the VM nodes."
       }
